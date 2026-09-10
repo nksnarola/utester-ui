@@ -1,0 +1,70 @@
+/** @type {import('tailwindcss').Config} */
+export default {
+  darkMode: ["class"],
+  content: [
+    "./index.html",
+    "./src/**/*.{js,ts,jsx,tsx}",
+  ],
+  theme: {
+    extend: {
+      colors: {
+        primary: {
+          DEFAULT: "var(--primary)",
+          foreground: "var(--primary-foreground)",
+        },
+        accent: {
+          DEFAULT: "var(--accent)",
+          soft: "var(--accent-soft)",
+          foreground: "var(--accent-foreground)",
+        },
+        background: "var(--background)",
+        surface: "var(--surface)",
+        text: {
+          DEFAULT: "var(--text)",
+          primary: "var(--text)",
+        },
+        muted: {
+          DEFAULT: "var(--muted)",
+          foreground: "var(--muted-foreground)",
+        },
+        border: "var(--border)",
+        success: {
+          DEFAULT: "var(--success)",
+          foreground: "var(--success-foreground)",
+        },
+        warning: {
+          DEFAULT: "var(--warning)",
+          foreground: "var(--warning-foreground)",
+        },
+        error: {
+          DEFAULT: "var(--error)",
+          foreground: "var(--error-foreground)",
+        },
+        destructive: {
+          DEFAULT: "var(--destructive)",
+          foreground: "var(--destructive-foreground)",
+        },
+        card: {
+          DEFAULT: "var(--card)",
+          foreground: "var(--card-foreground)",
+        },
+        popover: {
+          DEFAULT: "var(--popover)",
+          foreground: "var(--popover-foreground)",
+        },
+        secondary: {
+          DEFAULT: "var(--secondary)",
+          foreground: "var(--secondary-foreground)",
+        },
+        input: "var(--input)",
+        ring: "var(--ring)",
+      },
+      borderRadius: {
+        lg: "var(--radius, 0.5rem)",
+        md: "calc(var(--radius, 0.5rem) - 2px)",
+        sm: "calc(var(--radius, 0.5rem) - 4px)",
+      },
+    },
+  },
+  plugins: [],
+}
