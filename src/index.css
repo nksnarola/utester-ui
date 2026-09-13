@@ -110,6 +110,13 @@ body {
   transition: background-color 0.2s ease, color 0.2s ease;
 }
 
+/* Smooth color theme transitions for interactive and accented elements */
+aside, header, nav, button, a {
+  transition-property: background-color, border-color, color;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+}
+
 #root {
   min-height: 100vh;
   display: flex;
@@ -120,3 +127,67 @@ button:not(:disabled),
 [role="button"]:not([aria-disabled="true"]) {
   cursor: pointer;
 }
+
+/* 3D Transform and Floating Animations for Hero */
+.perspective-1000 {
+  perspective: 1000px;
+}
+
+.perspective-1200 {
+  perspective: 1200px;
+}
+
+.preserve-3d {
+  transform-style: preserve-3d;
+}
+
+@keyframes float-slow {
+  0%, 100% {
+    transform: translateY(0px) translateZ(24px);
+  }
+  50% {
+    transform: translateY(-10px) translateZ(24px);
+  }
+}
+
+@keyframes float-reverse {
+  0%, 100% {
+    transform: translateY(0px) translateZ(36px);
+  }
+  50% {
+    transform: translateY(10px) translateZ(36px);
+  }
+}
+
+@keyframes pulse-subtle {
+  0%, 100% {
+    opacity: 0.4;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.7;
+    transform: scale(1.06);
+  }
+}
+
+.animate-float-slow {
+  animation: float-slow 5s ease-in-out infinite;
+}
+
+.animate-float-reverse {
+  animation: float-reverse 6s ease-in-out infinite;
+}
+
+.animate-pulse-subtle {
+  animation: pulse-subtle 8s ease-in-out infinite;
+}
+
+/* Subtle background grid pattern */
+.bg-grid-pattern {
+  background-size: 32px 32px;
+  background-image: 
+    linear-gradient(to right, var(--border) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--border) 1px, transparent 1px);
+}
+
+

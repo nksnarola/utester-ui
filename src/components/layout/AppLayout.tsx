@@ -3,6 +3,7 @@ import { useAppDispatch, useAppSelector } from "@/hooks/useAppStore"
 import { logout } from "@/features/auth/store/authSlice"
 import { Button } from "@/components/ui/button"
 import { ThemeToggle } from "@/features/theme/components/ThemeToggle"
+import { ThemeCustomizer } from "@/features/theme/components/ThemeCustomizer"
 import {
   FlaskConical,
   LayoutDashboard,
@@ -106,6 +107,8 @@ export function AppLayout() {
             <span className="text-xs text-muted hidden sm:inline">
               Authenticated as <span className="font-medium text-text">{user?.email || "Session Active"}</span>
             </span>
+            {/* Theme & Color Palette Customizer for signed-in users */}
+            <ThemeCustomizer />
             <ThemeToggle />
             <Button
               variant="outline"
