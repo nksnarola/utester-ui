@@ -1,5 +1,5 @@
 import { Outlet, Link } from "react-router-dom"
-import { FlaskConical } from "lucide-react"
+import { Logo } from "@/components/common/Logo"
 import { ThemeToggle } from "@/features/theme/components/ThemeToggle"
 
 export function AuthLayout() {
@@ -13,10 +13,7 @@ export function AuthLayout() {
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
         <div className="flex justify-center">
           <Link to="/" className="flex items-center gap-2">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary text-primary-foreground shadow-sm">
-              <FlaskConical className="h-6 w-6 text-accent" />
-            </div>
-            <span className="text-2xl font-bold tracking-tight text-text">UTester</span>
+            <Logo variant="full" className="h-16 w-auto" />
           </Link>
         </div>
       </div>

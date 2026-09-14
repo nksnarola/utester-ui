@@ -2,7 +2,9 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link id="app-favicon" rel="icon" type="image/png" href="/images/logo/utester-logo-light-icon.png" />
+    <link rel="icon" type="image/png" href="/images/logo/utester-logo-dark-icon.png" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" type="image/png" href="/images/logo/utester-logo-light-icon.png" media="(prefers-color-scheme: light)" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>UTester - Quality Engineering Platform</title>
     <script>
@@ -14,6 +16,10 @@
             document.documentElement.classList.add('dark');
           } else {
             document.documentElement.classList.remove('dark');
+          }
+          var favicon = document.getElementById('app-favicon');
+          if (favicon) {
+            favicon.href = isDark ? '/images/logo/utester-logo-dark-icon.png' : '/images/logo/utester-logo-light-icon.png';
           }
         } catch (_) {}
       })();
