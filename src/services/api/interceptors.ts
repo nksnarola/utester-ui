@@ -15,24 +15,40 @@ interface CustomRequestConfig extends InternalAxiosRequestConfig {
   _retry?: boolean
 }
 
-// Queue item definition for requests waiting on token refresh
+// Queue item definition for requests waiting to be re-issued after token refresh
 interface QueueItem {
-  resolve: (token: string) => void
-  reject: (error: unknown) => void
+  config: CustomRequestConfig
+  resolve: (value: AxiosResponse | PromiseLike<AxiosResponse>) => void
+  reject: (reason?: unknown) => void
 }
 
 let isRefreshing = false
 let failedQueue: QueueItem[] = []
 
 /**
- * Resolves or rejects all queued requests once token refresh completes
+ * Re-issues all queued requests with the new access token, or rejects them if refresh failed.
  */
 function processQueue(error: unknown, token: string | null = null): void {
-  failedQueue.forEach((item) => {
+  failedQueue.forEach(({ config, resolve, reject }) => {
     if (error) {
-      item.reject(error)
+      reject(normalizeError(error))
     } else if (token) {
-      item.resolve(token)
+      // Mark request as retried to prevent infinite retry loops
+      config._retry = true
+
+      // Update Authorization header with the fresh token
+      if (config.headers) {
+        if (typeof config.headers.set === "function") {
+          config.headers.set("Authorization", `Bearer ${token}`)
+        } else {
+          config.headers.Authorization = `Bearer ${token}`
+        }
+      }
+
+      // Re-issue the queued request through axiosClient and pass result to caller
+      axiosClient(config)
+        .then((response) => resolve(response))
+        .catch((requestError) => reject(normalizeError(requestError)))
     }
   })
   failedQueue = []
@@ -120,18 +136,11 @@ export function setupAxiosInterceptors(dispatch?: AppDispatch): void {
           return Promise.reject(normalizeError(error))
         }
 
-        // If a refresh request is already in-flight, queue this request
+        // If a refresh request is already in-flight, queue this request to be re-issued
         if (isRefreshing) {
-          return new Promise<string>((resolve, reject) => {
-            failedQueue.push({ resolve, reject })
+          return new Promise<AxiosResponse>((resolve, reject) => {
+            failedQueue.push({ config: originalRequest, resolve, reject })
           })
-            .then((newToken) => {
-              originalRequest.headers.Authorization = `Bearer ${newToken}`
-              return axiosClient(originalRequest)
-            })
-            .catch((queueError) => {
-              return Promise.reject(normalizeError(queueError))
-            })
         }
 
         // Begin token refresh
@@ -152,11 +161,17 @@ export function setupAxiosInterceptors(dispatch?: AppDispatch): void {
             )
           }
 
-          // Resume all queued requests with the new access token
+          // Re-issue all queued requests with the new access token
           processQueue(null, newTokens.accessToken)
 
           // Re-send the original request with the fresh token
-          originalRequest.headers.Authorization = `Bearer ${newTokens.accessToken}`
+          if (originalRequest.headers) {
+            if (typeof originalRequest.headers.set === "function") {
+              originalRequest.headers.set("Authorization", `Bearer ${newTokens.accessToken}`)
+            } else {
+              originalRequest.headers.Authorization = `Bearer ${newTokens.accessToken}`
+            }
+          }
           return axiosClient(originalRequest)
         } catch (refreshError) {
           // Token refresh failed: reject queue, wipe tokens, dispatch logout, and redirect
