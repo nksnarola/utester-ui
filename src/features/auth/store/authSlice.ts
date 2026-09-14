@@ -11,9 +11,13 @@ export interface AuthUser {
 export interface AuthState {
   isAuthenticated: boolean
   user: AuthUser | null
+  /** Primary Bearer access token for authenticating API requests */
   accessToken: string | null
+  /** Long-lived refresh token used to rotate expired access tokens */
   refreshToken: string | null
-  /** Alias for accessToken for backward compatibility */
+  /**
+   * @deprecated Standardized to `accessToken`. Retained as a backward-compatible alias for any legacy callers.
+   */
   token: string | null
   isLoading: boolean
 }
@@ -47,21 +51,23 @@ export const authSlice = createSlice({
         user: AuthUser
         accessToken?: string
         refreshToken?: string
+        /** @deprecated Use `accessToken` instead */
         token?: string
       }>
     ) => {
-      const access = action.payload.accessToken || action.payload.token || ""
-      const refresh = action.payload.refreshToken || ""
+      // Standardize access token extraction: prefer explicit `accessToken`, fallback to legacy `token`
+      const accessToken = action.payload.accessToken || action.payload.token || ""
+      const refreshToken = action.payload.refreshToken || ""
 
       state.isAuthenticated = true
       state.user = action.payload.user
-      state.accessToken = access
-      state.refreshToken = refresh
-      state.token = access
+      state.accessToken = accessToken
+      state.refreshToken = refreshToken
+      state.token = accessToken // Maintain alias for backward compatibility
 
       tokenService.setTokens({
-        accessToken: access,
-        refreshToken: refresh,
+        accessToken,
+        refreshToken,
       })
     },
 
@@ -103,8 +109,8 @@ export const authSlice = createSlice({
 
         tokenService.clearTokens()
       } else {
-        const mockAccess = "mock-access-token-jwt"
-        const mockRefresh = "mock-refresh-token-jwt"
+        const mockAccessToken = "mock-access-token-jwt"
+        const mockRefreshToken = "mock-refresh-token-jwt"
 
         state.isAuthenticated = true
         state.user = {
@@ -113,13 +119,13 @@ export const authSlice = createSlice({
           email: "alex.morgan@example.com",
           role: "QA Engineer",
         }
-        state.accessToken = mockAccess
-        state.refreshToken = mockRefresh
-        state.token = mockAccess
+        state.accessToken = mockAccessToken
+        state.refreshToken = mockRefreshToken
+        state.token = mockAccessToken
 
         tokenService.setTokens({
-          accessToken: mockAccess,
-          refreshToken: mockRefresh,
+          accessToken: mockAccessToken,
+          refreshToken: mockRefreshToken,
         })
       }
     },

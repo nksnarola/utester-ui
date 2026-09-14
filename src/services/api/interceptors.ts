@@ -26,26 +26,30 @@ let isRefreshing = false
 let failedQueue: QueueItem[] = []
 
 /**
- * Re-issues all queued requests with the new access token, or rejects them if refresh failed.
+ * Re-issues all queued requests with the freshly renewed `accessToken`,
+ * or rejects them if the token refresh attempt failed.
+ *
+ * @param error - Refresh error if token refresh failed; null on success.
+ * @param accessToken - The new Bearer access token used to authorize the retried requests.
  */
-function processQueue(error: unknown, token: string | null = null): void {
+function processQueue(error: unknown, accessToken: string | null = null): void {
   failedQueue.forEach(({ config, resolve, reject }) => {
     if (error) {
       reject(normalizeError(error))
-    } else if (token) {
-      // Mark request as retried to prevent infinite retry loops
+    } else if (accessToken) {
+      // Mark request as retried to prevent infinite 401 retry loops
       config._retry = true
 
-      // Update Authorization header with the fresh token
+      // Attach the fresh access token to the Authorization header
       if (config.headers) {
         if (typeof config.headers.set === "function") {
-          config.headers.set("Authorization", `Bearer ${token}`)
+          config.headers.set("Authorization", `Bearer ${accessToken}`)
         } else {
-          config.headers.Authorization = `Bearer ${token}`
+          config.headers.Authorization = `Bearer ${accessToken}`
         }
       }
 
-      // Re-issue the queued request through axiosClient and pass result to caller
+      // Re-issue the queued request through axiosClient and pass result to original caller
       axiosClient(config)
         .then((response) => resolve(response))
         .catch((requestError) => reject(normalizeError(requestError)))
@@ -97,12 +101,16 @@ export function normalizeError(error: unknown): ApiError {
  * Injects the Redux store dispatch so auth actions can be dispatched seamlessly.
  */
 export function setupAxiosInterceptors(dispatch?: AppDispatch): void {
-  // 1. Request Interceptor: Attach Bearer token
+  // 1. Request Interceptor: Attach Bearer accessToken to outgoing requests
   axiosClient.interceptors.request.use(
     (config: InternalAxiosRequestConfig) => {
-      const token = tokenService.getAccessToken()
-      if (token && !config.headers.Authorization) {
-        config.headers.Authorization = `Bearer ${token}`
+      const accessToken = tokenService.getAccessToken()
+      if (accessToken && !config.headers.Authorization) {
+        if (typeof config.headers.set === "function") {
+          config.headers.set("Authorization", `Bearer ${accessToken}`)
+        } else {
+          config.headers.Authorization = `Bearer ${accessToken}`
+        }
       }
       return config
     },
