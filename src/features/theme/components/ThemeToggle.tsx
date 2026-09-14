@@ -9,7 +9,7 @@ interface ThemeToggleProps {
 
 export function ThemeToggle({ className }: ThemeToggleProps) {
   const dispatch = useAppDispatch()
-  const { mode } = useAppSelector((state) => state.theme)
+  const mode = useAppSelector((state) => state.theme.mode)
 
   // Determine effective theme (taking system preference into account if mode is 'system')
   const isDark =

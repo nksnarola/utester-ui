@@ -6,7 +6,7 @@ interface ThemeProviderProps {
 }
 
 export function ThemeProvider({ children }: ThemeProviderProps) {
-  const { mode } = useAppSelector((state) => state.theme)
+  const mode = useAppSelector((state) => state.theme.mode)
 
   useEffect(() => {
     const root = document.documentElement
@@ -16,6 +16,12 @@ export function ThemeProvider({ children }: ThemeProviderProps) {
         root.classList.add("dark")
       } else {
         root.classList.remove("dark")
+      }
+      const favicon = document.getElementById("app-favicon") as HTMLLinkElement | null
+      if (favicon) {
+        favicon.href = isDark
+          ? "/images/logo/utester-logo-dark-icon.png"
+          : "/images/logo/utester-logo-light-icon.png"
       }
     }
 
