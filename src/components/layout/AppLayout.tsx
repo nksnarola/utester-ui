@@ -4,8 +4,8 @@ import { logout } from "@/features/auth/store/authSlice"
 import { Button } from "@/components/ui/button"
 import { ThemeToggle } from "@/features/theme/components/ThemeToggle"
 import { ThemeCustomizer } from "@/features/theme/components/ThemeCustomizer"
+import { Logo } from "@/components/common/Logo"
 import {
-  FlaskConical,
   LayoutDashboard,
   FolderGit2,
   LogOut,
@@ -15,7 +15,7 @@ import {
 export function AppLayout() {
   const dispatch = useAppDispatch()
   const navigate = useNavigate()
-  const { user } = useAppSelector((state) => state.auth)
+  const user = useAppSelector((state) => state.auth.user)
 
   const handleLogout = () => {
     dispatch(logout())
@@ -32,11 +32,8 @@ export function AppLayout() {
       {/* Sidebar */}
       <aside className="hidden w-64 flex-col border-r border-border bg-surface md:flex">
         {/* Brand */}
-        <div className="flex h-16 items-center gap-2.5 border-b border-border px-6">
-          <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-            <FlaskConical className="h-5 w-5 text-accent" />
-          </div>
-          <span className="text-xl font-bold tracking-tight text-text">UTester</span>
+        <div className="flex h-16 items-center gap-2 border-b border-border px-6">
+          <Logo variant="full" className="h-16 w-auto" />
           <span className="ml-auto rounded bg-accent-soft px-1.5 py-0.5 text-[10px] font-semibold text-accent">
             PRO
           </span>
@@ -51,10 +48,9 @@ export function AppLayout() {
                 key={item.to}
                 to={item.to}
                 className={({ isActive }) =>
-                  `flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
-                    isActive
-                      ? "bg-accent-soft text-accent font-semibold"
-                      : "text-muted hover:bg-secondary hover:text-text"
+                  `flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors ${isActive
+                    ? "bg-accent-soft text-accent font-semibold"
+                    : "text-muted hover:bg-secondary hover:text-text"
                   }`
                 }
               >
@@ -84,7 +80,7 @@ export function AppLayout() {
             variant="outline"
             size="sm"
             onClick={handleLogout}
-            className="w-full justify-start gap-2 text-xs text-muted hover:text-destructive hover:border-destructive/30"
+            className="w-full justify-center gap-2 text-xs text-muted hover:text-destructive hover:border-destructive/30"
           >
             <LogOut className="h-3.5 w-3.5" />
             Sign out
@@ -97,8 +93,8 @@ export function AppLayout() {
         {/* Topbar */}
         <header className="flex h-16 items-center justify-between border-b border-border bg-surface px-4 sm:px-6 lg:px-8">
           <div className="flex items-center gap-2">
-            <div className="flex h-7 w-7 items-center justify-center rounded-md bg-primary text-primary-foreground md:hidden">
-              <FlaskConical className="h-4 w-4 text-accent" />
+            <div className="md:hidden flex items-center">
+              <Logo variant="icon" className="h-7 w-7" />
             </div>
             <span className="text-sm font-semibold text-text">Workspace</span>
           </div>

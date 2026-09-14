@@ -1,22 +1,20 @@
 import { Outlet, Link } from "react-router-dom"
 import { useAppSelector } from "@/hooks/useAppStore"
 import { Button } from "@/components/ui/button"
-import { FlaskConical, ArrowRight, LayoutDashboard } from "lucide-react"
+import { Logo } from "@/components/common/Logo"
+import { ArrowRight, LayoutDashboard } from "lucide-react"
 import { ThemeToggle } from "@/features/theme/components/ThemeToggle"
 
 export function PublicLayout() {
-  const { isAuthenticated } = useAppSelector((state) => state.auth)
+  const isAuthenticated = useAppSelector((state) => state.auth.isAuthenticated)
 
   return (
     <div className="flex min-h-screen flex-col bg-background text-text">
       {/* Public Header */}
       <header className="sticky top-0 z-40 border-b border-border bg-surface/90 backdrop-blur-sm">
         <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
-          <Link to="/" className="flex items-center gap-2 font-semibold text-primary">
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-              <FlaskConical className="h-5 w-5 text-accent" />
-            </div>
-            <span className="text-xl font-bold tracking-tight text-text">UTester</span>
+          <Link to="/" className="flex items-center gap-2">
+            <Logo variant="full" className="h-12 md:h-16 w-auto" />
           </Link>
 
           <nav className="hidden items-center gap-6 md:flex">
@@ -61,10 +59,13 @@ export function PublicLayout() {
       {/* Public Footer */}
       <footer className="border-t border-border bg-surface py-8 text-muted text-sm">
         <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-4 px-4 sm:flex-row sm:px-6 lg:px-8">
-          <div className="flex items-center gap-2">
-            <FlaskConical className="h-4 w-4 text-accent" />
-            <span className="font-semibold text-text">UTester</span>
-            <span>&copy; {new Date().getFullYear()} UTester Inc. All rights reserved.</span>
+          <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-4">
+            <Link to="/" className="inline-flex items-center">
+              <Logo variant="full" className="h-12 w-auto" />
+            </Link>
+            <span className="text-xs text-muted sm:border-l sm:border-border sm:pl-4">
+              &copy; {new Date().getFullYear()} UTester Inc. All rights reserved.
+            </span>
           </div>
           <div className="flex gap-6">
             <span className="hover:text-text cursor-pointer transition-colors">Privacy</span>

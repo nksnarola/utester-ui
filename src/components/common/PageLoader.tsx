@@ -1,4 +1,4 @@
-import { FlaskConical } from "lucide-react"
+import { Logo } from "./Logo"
 
 interface PageLoaderProps {
   /** Optional message displayed below the spinner */
@@ -14,11 +14,11 @@ export function PageLoader({ message = "Loading workspace..." }: PageLoaderProps
     >
       <div className="relative flex items-center justify-center">
         {/* Animated outer accent ring */}
-        <div className="h-16 w-16 animate-spin rounded-full border-2 border-slate-200 border-t-accent" />
+        <div className="h-36 w-36 animate-spin rounded-full border-2 border-border border-t-accent" />
 
         {/* Central emblem */}
-        <div className="absolute flex h-10 w-10 items-center justify-center rounded-xl bg-primary text-white shadow-sm">
-          <FlaskConical className="h-5 w-5 text-accent" />
+        <div className="absolute flex h-20 w-20 items-center justify-center rounded-xl bg-surface border border-border shadow-sm">
+          <Logo variant="icon" className="h-16 w-16" />
         </div>
       </div>
 

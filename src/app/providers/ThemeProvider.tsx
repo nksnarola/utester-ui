@@ -16,7 +16,8 @@ interface ThemeProviderProps {
  * 3. Immediate persistence across browser refreshes and tabs.
  */
 export function ThemeProvider({ children }: ThemeProviderProps) {
-  const { mode, colorTheme } = useAppSelector((state) => state.theme)
+  const mode = useAppSelector((state) => state.theme.mode)
+  const colorTheme = useAppSelector((state) => state.theme.colorTheme)
 
   useEffect(() => {
     const root = document.documentElement
@@ -45,6 +46,14 @@ export function ThemeProvider({ children }: ThemeProviderProps) {
 
       // 4. Set data attributes for easier CSS debugging and styling hooks
       root.setAttribute("data-color-theme", colorTheme)
+
+      // Set icons
+      const favicon = document.getElementById("app-favicon") as HTMLLinkElement | null
+      if (favicon) {
+        favicon.href = isDark
+          ? "/images/logo/utester-logo-dark-icon.png"
+          : "/images/logo/utester-logo-light-icon.png"
+      }
     }
 
     if (mode === "dark") {

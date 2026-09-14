@@ -2,7 +2,7 @@ import { useAppSelector } from "@/hooks/useAppStore"
 import { BarChart3, CheckCircle, Clock, AlertCircle } from "lucide-react"
 
 export function DashboardPage() {
-  const { user } = useAppSelector((state) => state.auth)
+  const userName = useAppSelector((state) => state.auth.user?.name)
 
   const stats = [
     { label: "Total Test Runs", value: "1,248", icon: BarChart3, change: "+12% from last week" },
@@ -16,7 +16,7 @@ export function DashboardPage() {
       <div>
         <h1 className="text-2xl font-bold tracking-tight text-text">Dashboard</h1>
         <p className="text-sm text-muted">
-          Welcome back, {user?.name || "Tester"}. Here is the real-time test execution overview.
+          Welcome back, {userName || "Tester"}. Here is the real-time test execution overview.
         </p>
       </div>
 
